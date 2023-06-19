@@ -1,0 +1,19 @@
+# main packages
+Django>3.2,<3.3
+djangorestframework>3.12,<3.13
+
+
+# third party packages
+djangorestframework_simplejwt
+markdown
+django-filter
+django-decouple
+django-cors-headers
+
+# linting and test packages
+flake8
+black
+
+# api docs
+drf-yasg
+drf-yasg[validation]

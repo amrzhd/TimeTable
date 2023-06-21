@@ -8,3 +8,9 @@ class TeacherAssignModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = TeacherAssignSerializer
     queryset = Section.objects.all()
+    
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.serializer_class
+    #     if serializer.is_valid():
+    #           return self.request  
+    #     return 

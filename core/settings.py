@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,12 +25,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = (
     "django-insecure-lp6m*3z^m649n*@s7ai+n=i5grx0uhlx6&z#cpnnwu7titzk+$"
 )
+# SECRET_KEY = config("SECRET_KEY", default="test")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", cast=bool, default=False)
 
-ALLOWED_HOSTS = []
+#DEBUG = True
 
+ALLOWED_HOSTS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = ["https://*.ngrok.io", "https://*.127.0.0.1"]
 
 # Application definition
 
@@ -43,9 +48,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_simplejwt",
-    "drf_yasg",
-    "accounts",
-    "timetable"
+    "drf_spectacular",
+    "accounts.apps.AccountsConfig",
+    "timetable.apps.TimetableConfig",
+    "silk",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +62,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "silk.middleware.SilkyMiddleware",
+
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -63,7 +71,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [(BASE_DIR / "templates")],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -116,10 +124,6 @@ LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
 
-USE_I18N = True
-
-USE_L10N = True
-
 USE_TZ = True
 
 
@@ -156,15 +160,25 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
+    # drf_spectacular
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 if not DEBUG:
     REST_FRAMEWORK.update(
-        {
-            "DEFAULT_RENDERER_CLASSES": (
-                "rest_framework.renderers.JSONRenderer",
-            )
-        }
+        {"DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",)}
     )
+
+SPECTACULAR_SETTINGS = {
+    # SPECTACULAR_SETTINGS docs https://drf-spectacular.readthedocs.io/en/latest/settings.html
+    "TITLE": "Time Table Rest API",
+    "DESCRIPTION": "Time Table Rest API Backend Service",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "CONTACT": ("test"),
+    "CONTACT": {"email": "amirzahedi0@gmail.com"},
+    "LICENSE": {"name": "MIT License"},  # url': 'https://license_link'
+    # OTHER SETTINGS
+}
 
 # json web token configs
 SIMPLE_JWT = {

@@ -44,8 +44,9 @@ DAYS_OF_WEEK = (
 
 
 class Section(models.Model):
-    section_id = models.CharField(max_length=25, primary_key=True)
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    section_id = models.AutoField(primary_key=True)
+    teachers = models.ManyToManyField(User)
+    #teacher = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
     iranian_time = models.CharField(max_length=50, choices=iranian_time_slots, 
                                     default='9:00 - 9:45', null=False, blank=False)
     chinese_time = models.CharField(max_length=50, choices=chinese_time_slots,

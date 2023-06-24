@@ -1,7 +1,19 @@
 # main packages
-Django>3.2,<3.3
-djangorestframework>3.12,<3.13
+django >3.2,<3.3
+python-decouple
+Pillow
+djangorestframework
 
+# env controlls
+python-decouple
+
+#test
+pytest
+pytest-django
+
+#Third party modules
+markdown
+django-filter
 
 # third party packages
 djangorestframework_simplejwt
@@ -10,10 +22,24 @@ django-filter
 django-decouple
 django-cors-headers
 
+
 # linting and test packages
 flake8
 black
 
-# api docs
-drf-yasg
-drf-yasg[validation]
+# # api docs
+# drf-yasg
+# drf-yasg[validation]
+
+#drf-yasg[validation]
+drf-spectacular
+djangorestframework-simplejwt
+
+# sms pannel
+zeep
+requests
+aiohttp
+asyncio
+
+# query testing
+django-silk

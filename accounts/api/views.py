@@ -6,15 +6,28 @@ from django.shortcuts import get_object_or_404
 from accounts.models import User
 from .serializers import (
     ProfileSerializer,
-    RegisterSerializer,
+    ManagerRegisterSerializer,
+    TeacherRegisterSerializer,
 )
 
 
-class RegisterApiView(generics.CreateAPIView):
-    """Creates a new user with the given info and credentials"""
+# class RegisterApiView(generics.CreateAPIView):
+#     """Creates a new user with the given info and credentials"""
 
-    serializer_class = RegisterSerializer
-    queryset = User.objects.all()
+#     serializer_class = RegisterSerializer
+#     queryset = User.objects.all()
+    
+class TeacherRegisterApiView(generics.CreateAPIView):
+    """Creates a new teacher user with the given info and credentials"""
+
+    serializer_class = TeacherRegisterSerializer
+    queryset = User.objects.filter(is_teacher=True)
+
+class ManagerRegisterApiView(generics.CreateAPIView):
+    """Creates a new manager user with the given info and credentials"""
+    
+    serializer_class = ManagerRegisterSerializer
+    queryset = User.objects.filter(is_manager=True)
 
 
 class ProfileApiView(generics.RetrieveUpdateAPIView):

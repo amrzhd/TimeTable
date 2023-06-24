@@ -4,10 +4,10 @@ from .models import Section
 
 class SectionAdminConfig(admin.ModelAdmin):
     model = Section
-    search_fields = ["iranian_time", "day", "teacher",]
-    list_filter = ("iranian_time", "day", "teacher",)
-    list_display = ("iranian_time", "day", "teacher",)
-    add_fieldsets = ("iranian_time", "day", "teacher",)
+    search_fields = ["iranian_time", "day","teachers",]
+    list_filter = ("iranian_time", "day", "teachers",)
+    list_display = ("iranian_time", "day",)
+    add_fieldsets = ("iranian_time", "day",)
     
     
 # Register your models here.

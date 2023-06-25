@@ -11,9 +11,10 @@ class TeacherSerializer(serializers.ModelSerializer):
             "is_teacher",
             "is_manager",
         ]
+        queryset = User.objects.filter(is_manager=True,is_teacher=False)
+
 
 class TeacherAssignSerializer(serializers.ModelSerializer):
-    #teacher = serializers.SerializerMethodField(read_only=False)
     teachers = TeacherSerializer(many=True)
     class Meta:
         model = Section
@@ -22,23 +23,11 @@ class TeacherAssignSerializer(serializers.ModelSerializer):
             "chinese_time",
             "day",
             "teachers",
-        ]
-        # def create(self, validated_data):
-        #     tracks_data = validated_data.pop('tracks')
-            # album = Album.objects.create(**validated_data)
-            # for track_data in tracks_data:
-            # Track.objects.create(album=album, **track_data)
-            # return album
-        
+        ]        
         
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep["teachers"] = [teacher.email for teacher in instance.teachers.all()]
         return rep
-
-        #for 1 teacher per section:
-        # rep = super().to_representation(instance)
-        # rep["teacher"] = instance.teacher.email
-        # return rep
     
     

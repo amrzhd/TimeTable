@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User, Profile
+from accounts.models import User
 
 
 class ManagerRegisterSerializer(serializers.ModelSerializer):
@@ -60,13 +60,3 @@ class TeacherRegisterSerializer(serializers.ModelSerializer):
         validated_data.pop("password1")
         return User.objects.create_user(**validated_data)
 
-
-class ProfileSerializer(serializers.ModelSerializer):
-    """Profile serializer to manage extra user info"""
-
-    class Meta:
-        model = Profile
-        fields = [
-            "first_name",
-            "last_name",
-        ]

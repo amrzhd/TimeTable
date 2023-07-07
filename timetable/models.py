@@ -17,21 +17,6 @@ iranian_time_slots = (
     ('21:00 - 21:45', '21:00 - 21:45'),
 )
 
-chinese_time_slots = (
-    ('4:30 - 5:15', '4:30 - 5:15'),
-    ('5:30 - 6:15', '5:30 - 6:15'),
-    ('6:30 - 7:15', '6:30 - 7:15'),
-    ('7:30 - 8:15', '7:30 - 8:15'),
-    ('8:30 - 9:15', '8:30 - 9:15'),
-    ('9:30 - 10:15', '9:30 - 10:15'),
-    ('10:30 - 11:15', '10:30 - 11:15'),
-    ('11:30 - 12:15', '11:30 - 12:15'),
-    ('12:30 - 13:15', '12:30 - 13:15'),
-    ('13:30 - 14:15', '13:30 - 14:15'),
-    ('14:30 - 15:15', '14:30 - 15:15'),
-    ('16:30 - 17:15', '16:30 - 17:15'),
-)
-
 DAYS_OF_WEEK = (
     ('Sunday', 'Sunday'),
     ('Monday', 'Monday'),
@@ -45,12 +30,9 @@ DAYS_OF_WEEK = (
 
 class Section(models.Model):
     section_id = models.AutoField(primary_key=True)
-    teachers = models.ManyToManyField(User)
-    #teacher = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    teachers = models.ManyToManyField(User, unique=False, default=None)
     iranian_time = models.CharField(max_length=50, choices=iranian_time_slots, 
                                     default='9:00 - 9:45', null=False, blank=False)
-    chinese_time = models.CharField(max_length=50, choices=chinese_time_slots,
-                                    default='4:30 - 5:15', null=False, blank=False)
     day = models.CharField(max_length=15, default='Sunday',choices=DAYS_OF_WEEK, null=False, blank=False)
     
     # def set_teaching_time(self, teachingTime):
@@ -62,3 +44,21 @@ class Section(models.Model):
     #     section = Section.objects.get(pk = self.section_id)
     #     section.teacher = teacher
     #     section.save()
+
+    # chinese_time = models.CharField(max_length=50, choices=chinese_time_slots,
+    #                                 default='4:30 - 5:15', null=False, blank=False)
+
+# chinese_time_slots = (
+#     ('4:30 - 5:15', '4:30 - 5:15'),
+#     ('5:30 - 6:15', '5:30 - 6:15'),
+#     ('6:30 - 7:15', '6:30 - 7:15'),
+#     ('7:30 - 8:15', '7:30 - 8:15'),
+#     ('8:30 - 9:15', '8:30 - 9:15'),
+#     ('9:30 - 10:15', '9:30 - 10:15'),
+#     ('10:30 - 11:15', '10:30 - 11:15'),
+#     ('11:30 - 12:15', '11:30 - 12:15'),
+#     ('12:30 - 13:15', '12:30 - 13:15'),
+#     ('13:30 - 14:15', '13:30 - 14:15'),
+#     ('14:30 - 15:15', '14:30 - 15:15'),
+#     ('16:30 - 17:15', '16:30 - 17:15'),
+# )

@@ -8,26 +8,58 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             "email",
-            "is_teacher",
-            "is_manager",
         ]
-        queryset = User.objects.filter(is_manager=True,is_teacher=False)
-
-
-class TeacherAssignSerializer(serializers.ModelSerializer):
+        
+class SectionDetailSerializer(serializers.ModelSerializer):
+    section_id = serializers.IntegerField(read_only=True)
     teachers = TeacherSerializer(many=True)
     class Meta:
         model = Section
         fields = [
+            "section_id",
             "iranian_time",
-            "chinese_time",
+            "day",
+            "teachers",
+        ]
+
+class SectionsListSerializer(serializers.ModelSerializer):
+    teachers = TeacherSerializer(many=True)
+    class Meta:
+        model = Section
+        fields = [
+            "section_id",
+            "iranian_time",
             "day",
             "teachers",
         ]        
+
+class AddTeachersSerializer(serializers.ModelSerializer):
+    teachers = serializers.ListField(child=serializers.EmailField())
+
+    class Meta:
+        model = Section
+        fields = ['teachers']
+
+    def validate(self, attrs):
+        teachers_emails = attrs.get('teachers', [])
+        return attrs
+
+    def update(self, instance, validated_data):
+        teachers_emails = validated_data.get('teachers', [])
+        return instance
+
+class TeacherSectionsListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = [
+            "iranian_time",
+            "day",
+        ]
         
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep["teachers"] = [teacher.email for teacher in instance.teachers.all()]
-        return rep
-    
+# class SectionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Section
+#         exclude = ["teachers"]
+
+
     

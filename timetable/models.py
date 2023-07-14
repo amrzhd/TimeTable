@@ -27,26 +27,23 @@ DAYS_OF_WEEK = (
     ('Saturday', 'Saturday'),
 )
 
-
 class Section(models.Model):
     section_id = models.AutoField(primary_key=True)
-    teachers = models.ManyToManyField(User, unique=False, default=None)
+    iranian_time = models.CharField(max_length=50, choices=iranian_time_slots, 
+                                    default='9:00 - 9:45', null=False, blank=False)
+    day = models.CharField(max_length=15, default='Sunday',choices=DAYS_OF_WEEK, null=False, blank=False)    
+    
+class FreeSection(models.Model):
+    section_id = models.AutoField(primary_key=True)
     iranian_time = models.CharField(max_length=50, choices=iranian_time_slots, 
                                     default='9:00 - 9:45', null=False, blank=False)
     day = models.CharField(max_length=15, default='Sunday',choices=DAYS_OF_WEEK, null=False, blank=False)
     
-    # def set_teaching_time(self, teachingTime):
-    #     section = Section.objects.get(pk = self.section_id)
-    #     section.teaching_time = teachingTime
-    #     section.save()
+class SectionTeacher(models.Model):
+    user = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, blank=True, null=True, on_delete=models.CASCADE)
+    free_section = models.ForeignKey(FreeSection, blank=True, null=True, on_delete=models.CASCADE)
 
-    # def set_teacher(self, teacher):
-    #     section = Section.objects.get(pk = self.section_id)
-    #     section.teacher = teacher
-    #     section.save()
-
-    # chinese_time = models.CharField(max_length=50, choices=chinese_time_slots,
-    #                                 default='4:30 - 5:15', null=False, blank=False)
 
 # chinese_time_slots = (
 #     ('4:30 - 5:15', '4:30 - 5:15'),

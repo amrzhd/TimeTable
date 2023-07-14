@@ -1,65 +1,32 @@
 
 from rest_framework import serializers
-from ..models import Section
+from ..models import Section, FreeSection, SectionTeacher
 from accounts.models import User
 
-class TeacherSerializer(serializers.ModelSerializer):
+class TeacherSectionRegisterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = [
-            "email",
+        model = SectionTeacher
+        fields =[
+            "free_section",
         ]
-        
-class SectionDetailSerializer(serializers.ModelSerializer):
-    section_id = serializers.IntegerField(read_only=True)
-    teachers = TeacherSerializer(many=True)
-    class Meta:
-        model = Section
-        fields = [
-            "section_id",
-            "iranian_time",
-            "day",
-            "teachers",
-        ]
-
-class SectionsListSerializer(serializers.ModelSerializer):
-    teachers = TeacherSerializer(many=True)
-    class Meta:
-        model = Section
-        fields = [
-            "section_id",
-            "iranian_time",
-            "day",
-            "teachers",
-        ]        
-
-class AddTeachersSerializer(serializers.ModelSerializer):
-    teachers = serializers.ListField(child=serializers.EmailField())
-
-    class Meta:
-        model = Section
-        fields = ['teachers']
-
-    def validate(self, attrs):
-        teachers_emails = attrs.get('teachers', [])
-        return attrs
-
-    def update(self, instance, validated_data):
-        teachers_emails = validated_data.get('teachers', [])
-        return instance
-
-class TeacherSectionsListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Section
-        fields = [
-            "iranian_time",
-            "day",
-        ]
-        
-# class SectionSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Section
-#         exclude = ["teachers"]
-
-
     
+    def create(self, validated_data):
+        validated_data["user"] = self.context.get("request").user
+
+        return super().create(validated_data)
+    
+class SectionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = [
+            "iranian_time",
+            "day",
+        ]
+
+class FreeSectionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FreeSection
+        fields = [
+            "iranian_time",
+            "day",
+        ]

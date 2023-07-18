@@ -4,17 +4,17 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from accounts.models import User
-from .serializers import RegisterSerializer
+from .serializers import TeacherRegisterSerializer, ManagerRegisterSerializer
 
     
-class RegisterApiView(generics.GenericAPIView):
+class TeacherRegisterAPIView(generics.GenericAPIView):
     """Creates a new teacher user with the given info and credentials"""
 
-    serializer_class = RegisterSerializer
+    serializer_class = TeacherRegisterSerializer
     
     def post(self, request, *args, **kwargs):
 
-        serializer = RegisterSerializer(data=request.data, many=False)
+        serializer = TeacherRegisterSerializer(data=request.data, many=False)
 
         if serializer.is_valid():
             serializer.save()
@@ -22,4 +22,16 @@ class RegisterApiView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+class ManagerRegisterAPIView(generics.GenericAPIView):
+    """Creates a new teacher user with the given info and credentials"""
 
+    serializer_class = ManagerRegisterSerializer
+    
+    def post(self, request, *args, **kwargs):
+
+        serializer = ManagerRegisterSerializer(data=request.data, many=False)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -41,15 +41,21 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-
     email = models.EmailField(_("email address"), unique=True)
+    phone = models.CharField(_("phone"), max_length=11)
+    first_name = models.CharField(max_length=250)
+    last_name = models.CharField(max_length=250)
+    teacher_id = models.CharField(max_length=10)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
     is_manager = models.BooleanField(default=False)
-    is_teacher = models.BooleanField(default=True)
+    is_teacher = models.BooleanField(default=False)
+    
+    teacher_id = models.CharField(max_length=20, null=True, blank=True)
+     
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 

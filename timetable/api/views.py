@@ -1,8 +1,13 @@
-from timetable.models import Section, FreeSection, SectionTeacher
+from timetable.models import Section, FreeSection, SectionTeacher, FreeSectionTeacher
 from .serializers import (
     SectionCreateSerializer,
     FreeSectionCreateSerializer,
-    TeacherSectionRegisterSerializer
+    TeacherSectionAdjustSerializer,
+    TeacherFreeSectionAdjustSerializer,
+    FreeSectionListSerializer,
+    SectionListSerializer,
+    TeacherListSectionSerializer,
+    TeacherListFreeSectionSerializer,
     )
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -15,15 +20,15 @@ from django.db import IntegrityError
 from accounts.models import User
 from ..models import Section, iranian_time_slots, DAYS_OF_WEEK
         
-class TeacherSectionRegisterAPIView(viewsets.ModelViewSet):
+class TeacherFreeSectionAdjustAPIView(viewsets.ModelViewSet):
     '''
     Gives the list of sections which the requested teacher has.
     '''
     permission_classes = [IsAuthenticated]
-    serializer_class = TeacherSectionRegisterSerializer
+    serializer_class = TeacherFreeSectionAdjustSerializer
     
     def get_queryset(self):
-        query =  SectionTeacher.objects.filter(user = self.request.user)
+        query =  FreeSectionTeacher.objects.filter(user = self.request.user)
         return query
     
     def create(self,request):
@@ -33,14 +38,139 @@ class TeacherSectionRegisterAPIView(viewsets.ModelViewSet):
         if serializer.is_valid():    
             try:
                 serializer.save()
+                return Response(
+                    {'message':'Free section successfully added'}
+                )
             except IntegrityError as e:
                 return Response(
                     {'message': f'Teacher has been added before {e}'},
                     status=status.HTTP_406_NOT_ACCEPTABLE,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def destroy(self, request, *args, **kwargs):
+          # Get the requested user
+        
+        serializer = self.serializer_class(
+            data=request.data, many=False, context={"request": self.request}
+        )
+
+        if serializer.is_valid():
+            free_section = serializer.validated_data.get("free_section")
+            section_teacher = SectionTeacher.objects.get(
+                user=request.user, free_section=free_section
+            )
+
+            if section_teacher:
+                section_teacher.free_section.delete()  # Delete the free section
+
+                return Response(
+                    {"detail": "Free section successfully deleted"},
+                    status=status.HTTP_204_NO_CONTENT,
+                )
+
+        return Response(
+            {"detail": "Free section not found or you don't have permission to delete"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+        
+class TeacherSectionAdjustAPIView(viewsets.ModelViewSet):
+    '''
+    Assigns  which the requested teacher has.
+    '''
+    permission_classes = [IsAuthenticated]
+    serializer_class = TeacherSectionAdjustSerializer
     
-               
+    def get_queryset(self):
+        query =  SectionTeacher.objects.filter(user = self.request.user)
+        return query
+    
+    def create(self,request):
+        serializer = self.serializer_class(
+            data=request.data, many=False
+        )
+        if serializer.is_valid():    
+            try:
+                serializer.save()
+                return Response(
+                    {'message':'Teacher added successfully to the section'}
+                )
+            except IntegrityError as e:
+                return Response(
+                    {'message': f'Teacher has been added before {e}'},
+                    status=status.HTTP_406_NOT_ACCEPTABLE,
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FreeSectionListAPIView(generics.ListAPIView):
+    '''
+    Gives a list of free sections of a specific teacher
+    '''
+    permission_classes = [IsAuthenticated]
+    serializer_class = FreeSectionListSerializer
+    def get_queryset(self):
+        user_email = self.kwargs['teacher_email']
+        query = FreeSectionTeacher.objects.filter(teacher__email=user_email).select_related('free_section')
+        return query
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)    
+    
+class SectionListAPIView(generics.ListAPIView):
+    '''
+    Gives a list of sections of a specific teacher
+    '''
+    permission_classes = [IsAuthenticated]
+    serializer_class = SectionListSerializer
+    def get_queryset(self):
+        user_email = self.kwargs['teacher_email']
+        query = SectionTeacher.objects.filter(teacher__email=user_email).select_related('section')
+        return query
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+class TeacherListSectionListAPIView(generics.ListAPIView):
+    '''
+    Gives a list of teachers of a given section
+    '''
+    permission_classes = [IsAuthenticated]
+    serializer_class = TeacherListSectionSerializer
+    
+    def get_queryset(self):
+        day = self.kwargs['day']
+        iranian_time = self.kwargs['iranian_time']
+        query = SectionTeacher.objects.filter(section__day=day, section__iranian_time=iranian_time ).select_related('teacher')
+        return query
+    
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+    
+class TeacherListFreeSectionListAPIView(generics.ListAPIView):
+    '''
+    Gives a list of teachers of a given section
+    '''
+    permission_classes = [IsAuthenticated]
+    serializer_class = TeacherListFreeSectionSerializer
+    
+    def get_queryset(self):
+        day = self.kwargs['day']
+        iranian_time = self.kwargs['iranian_time']
+        query = FreeSectionTeacher.objects.filter(free_section__day=day, free_section__iranian_time=iranian_time ).select_related('teacher')
+        return query
+    
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+             
 class CreateSectionsAPIView(APIView):
     '''
     Creates all the of possible sections

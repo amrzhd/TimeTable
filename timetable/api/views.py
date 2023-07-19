@@ -154,16 +154,19 @@ class TeacherListSectionListAPIView(generics.ListAPIView):
         return Response(serializer.data)
     
 class TeacherListFreeSectionListAPIView(generics.ListAPIView):
-    '''
+    """
     Gives a list of teachers of a given section
-    '''
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = TeacherListFreeSectionSerializer
     
     def get_queryset(self):
         day = self.kwargs['day']
         iranian_time = self.kwargs['iranian_time']
-        query = FreeSectionTeacher.objects.filter(free_section__day=day, free_section__iranian_time=iranian_time ).select_related('teacher')
+        query = FreeSectionTeacher.objects.filter(
+            free_section__day=day, 
+            free_section__iranian_time=iranian_time
+            ).select_related('teacher')
         return query
     
     def get(self, request, *args, **kwargs):
@@ -172,9 +175,9 @@ class TeacherListFreeSectionListAPIView(generics.ListAPIView):
         return Response(serializer.data)
              
 class CreateSectionsAPIView(APIView):
-    '''
+    """
     Creates all the of possible sections
-    '''
+    """
     def get(self, request, format=None):
         sections_data = []
         for day in DAYS_OF_WEEK:

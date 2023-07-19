@@ -52,3 +52,12 @@ class ManagerRegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+class AssignTeacherIdSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    teacher_id = serializers.CharField(max_length=20)
+
+    def update(self, instance, validated_data):
+        instance.teacher_id = validated_data['teacher_id']
+        instance.save()
+        return instance

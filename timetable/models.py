@@ -78,21 +78,22 @@ class Class(models.Model):
     student_english_name = models.CharField(null=False, blank=False, max_length=50)
     student_chinese_name = models.CharField(null=True, blank=True, max_length=50)
     session = models.PositiveBigIntegerField()
+    platform = models.CharField(null=True, blank=True, max_length=50)
+    
     def __str__(self):
-        return f"{self.student_english_name}: session({self.session})"
+        return f"{self.student_english_name}: session({self.session}) - platform: {self.platform}"
     
 class SectionTeacher(models.Model):
     teacher = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
-    section = models.ForeignKey(Section, blank=True, null=True, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, blank=False, null=True, on_delete=models.CASCADE)
     student = models.CharField(null=True, blank=True, max_length=50)
-    platform = models.CharField(null=True, blank=True, max_length=50)
+    
     def __str__(self):
-        return f"{self.teacher}: {self.section}"    
+        return f"{self.teacher}: {self.section}"
     
 class FreeSectionTeacher(models.Model):
     teacher = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
     free_section = models.ForeignKey(FreeSection, blank=True, null=True, on_delete=models.CASCADE)
-    #student = models.CharField(null=True, blank=True, max_length=50)
     free_section_class = models.ForeignKey(Class, blank=True, null=True, on_delete=models.CASCADE)
     
     def __str__(self):

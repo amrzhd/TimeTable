@@ -6,7 +6,7 @@ from .serializers import (
     SectionListSerializer,
     TeacherListSectionSerializer,
     TeacherListFreeSectionSerializer,
-    SetStudentToTeacherSerializer,
+    SetClassSerializer,
     )
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -172,12 +172,12 @@ class TeacherListFreeSectionListAPIView(generics.ListAPIView):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
   
-class SetStudentToTeacherUpdateAPIView(generics.UpdateAPIView):
+class SetClassUpdateAPIView(generics.UpdateAPIView):
     """
     Set an a Student to a teacher in a free section
     """
     permission_classes = [IsAuthenticated]
-    serializer_class = SetStudentToTeacherSerializer
+    serializer_class = SetClassSerializer
     queryset = FreeSectionTeacher.objects.all()
 
     def update(self, request, *args, **kwargs):
@@ -186,17 +186,15 @@ class SetStudentToTeacherUpdateAPIView(generics.UpdateAPIView):
 
         teacher = serializer.validated_data.get('teacher')
         free_section = serializer.validated_data.get('free_section')
-        free_section_class = serializer.validated_data.get('free_Section_class')
+        free_section_class = serializer.validated_data.get('free_section_class')
         
         try:
-            free_section_teacher = self.get_queryset().get(teacher = teacher, free_section = free_section)
+            free_section_teacher = self.get_queryset().get(teacher=teacher, free_section=free_section)
         except FreeSectionTeacher.DoesNotExist:
             return Response({'error': 'FreeSectionTeacher not found.'}, status=status.HTTP_404_NOT_FOUND)
-
         free_section_teacher.free_section_class = free_section_class
         free_section_teacher.save()
-
-        return Response(serializer.data, status=status.HTTP_200_OK) 
+        return Response({'message': f'Class "{free_section_class}" has been set .'}, status=status.HTTP_200_OK) 
   
 #----------------------------------------Section Creators API---------------------------------------#  
            

@@ -29,10 +29,10 @@ admin.site.register(FreeSection, FreeSectionAdminConfig)
 
 class ClassAdminConfig(admin.ModelAdmin):
     model = Class
-    search_fields = ["student_english_name", "student_chinese_name", "session",]
-    list_filter = ("student_english_name", "student_chinese_name", "session",)
-    list_display = ("student_english_name", "student_chinese_name", "session",)
-    add_fieldsets = ("student_english_name", "student_chinese_name", "session",)    
+    search_fields = ["student_english_name", "student_chinese_name", "session", "platform",]
+    list_filter = ("student_english_name", "student_chinese_name", "session", "platform",)
+    list_display = ("student_english_name", "student_chinese_name", "session", "platform",)
+    add_fieldsets = ("student_english_name", "student_chinese_name", "session","platform",)    
 
 admin.site.register(Class, ClassAdminConfig)
 

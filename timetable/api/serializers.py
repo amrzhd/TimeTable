@@ -62,7 +62,7 @@ class TeacherListFreeSectionSerializer(serializers.ModelSerializer):
             "teacher_email",
         ]
         
-class SetStudentToTeacherSerializer(serializers.ModelSerializer):
+class SetClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = FreeSectionTeacher
         fields =[

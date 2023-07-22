@@ -8,7 +8,7 @@ from .views import (
     FreeSectionListAPIView,
     TeacherListSectionListAPIView,
     TeacherListFreeSectionListAPIView,
-    SetStudentToTeacherUpdateAPIView,
+    SetClassUpdateAPIView,
     )
 
 urlpatterns = [
@@ -28,8 +28,8 @@ urlpatterns = [
     path("teacher-list-free-section/<str:day>/<str:iranian_time>/", 
          TeacherListFreeSectionListAPIView.as_view(), name="teacher-list-free-section"),
     
-    #Student:
-    path("set-student-to-teacher/", SetStudentToTeacherUpdateAPIView.as_view(), name="set-student-to-teacher"),
+    #Class:
+    path("set-class/", SetClassUpdateAPIView.as_view(), name="set-class"),
     
     #Section Creators:
     path("section-creator/", CreateSectionsAPIView.as_view(), name="section-creator"),

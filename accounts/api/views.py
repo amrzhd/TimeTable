@@ -7,7 +7,7 @@ from accounts.models import User
 from .serializers import (
     TeacherRegisterSerializer,
     ManagerRegisterSerializer,
-    AssignTeacherIdSerializer,
+    GiveTeacherIdSerializer,
     )
 
     
@@ -60,12 +60,12 @@ class ManagerRegisterAPIView(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class AssignTeacherIdUpdateAPIView(generics.UpdateAPIView):
+class GiveTeacherIdUpdateAPIView(generics.UpdateAPIView):
     """
     Assigns an ID to a teacher
     """
     permission_classes = [IsAuthenticated]
-    serializer_class = AssignTeacherIdSerializer
+    serializer_class = GiveTeacherIdSerializer
     queryset = User.objects.all()
 
     def update(self, request, *args, **kwargs):

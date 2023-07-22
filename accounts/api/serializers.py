@@ -53,7 +53,7 @@ class ManagerRegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-class AssignTeacherIdSerializer(serializers.Serializer):
+class GiveTeacherIdSerializer(serializers.Serializer):
     email = serializers.EmailField()
     teacher_id = serializers.CharField(max_length=20)
 

@@ -50,14 +50,14 @@ class Section(models.Model):
                                     default='9:00 - 9:45', null=False, blank=False)
     chinese_time = models.CharField(max_length=50, choices=chinese_time_slots, 
                                     default='4:30 - 5:15', null=False, blank=False)
-    day = models.CharField(max_length=15, default='Sunday',choices=DAYS_OF_WEEK, null=False, blank=False) 
+    day = models.CharField(max_length=15, default='Sunday',choices=DAYS_OF_WEEK, null=False, blank=False)
     
     def __str__(self):
-        return f"{self.iranian_time}/{self.chinese_time} - {self.day}"
+        return f"{self.chinese_time}/ {self.iranian_time} - {self.day}"
     
     @property
     def name(self):
-        return f"{self.iranian_time}/{self.chinese_time} - {self.day}"
+        return f"{self.chinese_time}/ {self.iranian_time} - {self.day}"
     
 class FreeSection(models.Model):
     section_id = models.AutoField(primary_key=True)
@@ -68,24 +68,32 @@ class FreeSection(models.Model):
     day = models.CharField(max_length=15, default='Sunday',choices=DAYS_OF_WEEK, null=False, blank=False)
     
     def __str__(self):
-        return f"{self.iranian_time}/{self.chinese_time} - {self.day}"
+        return f"{self.chinese_time}/ {self.iranian_time} - {self.day}"
     
     @property
     def name(self):
-        return f"{self.iranian_time}/{self.chinese_time} - {self.day}"
+        return f"{self.chinese_time}/ {self.iranian_time} - {self.day}"
         
+class Class(models.Model):
+    student_english_name = models.CharField(null=False, blank=False, max_length=50)
+    student_chinese_name = models.CharField(null=True, blank=True, max_length=50)
+    session = models.PositiveBigIntegerField()
+    def __str__(self):
+        return f"{self.student_english_name}: session({self.session})"
+    
 class SectionTeacher(models.Model):
     teacher = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, blank=True, null=True, on_delete=models.CASCADE)
     student = models.CharField(null=True, blank=True, max_length=50)
-    
+    platform = models.CharField(null=True, blank=True, max_length=50)
     def __str__(self):
-        return f"{self.teacher}/{self.section}"    
+        return f"{self.teacher}: {self.section}"    
     
 class FreeSectionTeacher(models.Model):
     teacher = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
     free_section = models.ForeignKey(FreeSection, blank=True, null=True, on_delete=models.CASCADE)
-    student = models.CharField(null=True, blank=True, max_length=50)
-
+    #student = models.CharField(null=True, blank=True, max_length=50)
+    free_section_class = models.ForeignKey(Class, blank=True, null=True, on_delete=models.CASCADE)
+    
     def __str__(self):
-        return f"{self.teacher}: {self.student}-{self.free_section}"
+        return f"{self.teacher}: {self.free_section} - {self.free_section_class}"

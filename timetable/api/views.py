@@ -6,6 +6,7 @@ from .serializers import (
     SectionListSerializer,
     TeacherListSectionSerializer,
     TeacherListFreeSectionSerializer,
+    SetStudentToTeacherSerializer,
     )
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -17,9 +18,9 @@ from django.db import IntegrityError
 from ..models import Section, FreeSection, iranian_time_slots, chinese_time_slots, DAYS_OF_WEEK
         
 class TeacherFreeSectionAdjustAPIView(viewsets.ModelViewSet):
-    '''
+    """
     Gives the list of sections which the requested teacher has.
-    '''
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = TeacherFreeSectionAdjustSerializer
     
@@ -72,9 +73,9 @@ class TeacherFreeSectionAdjustAPIView(viewsets.ModelViewSet):
         )
         
 class TeacherSectionAdjustAPIView(viewsets.ModelViewSet):
-    '''
-    Assigns  which the requested teacher has.
-    '''
+    """
+    Adjust  which the requested teacher has.
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = TeacherSectionAdjustSerializer
     
@@ -100,9 +101,9 @@ class TeacherSectionAdjustAPIView(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FreeSectionListAPIView(generics.ListAPIView):
-    '''
+    """
     Gives a list of free sections of a specific teacher
-    '''
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = FreeSectionListSerializer
     def get_queryset(self):
@@ -116,9 +117,9 @@ class FreeSectionListAPIView(generics.ListAPIView):
         return Response(serializer.data)    
     
 class SectionListAPIView(generics.ListAPIView):
-    '''
+    """
     Gives a list of sections of a specific teacher
-    '''
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = SectionListSerializer
     def get_queryset(self):
@@ -132,16 +133,17 @@ class SectionListAPIView(generics.ListAPIView):
         return Response(serializer.data)
 
 class TeacherListSectionListAPIView(generics.ListAPIView):
-    '''
+    """
     Gives a list of teachers of a given section
-    '''
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = TeacherListSectionSerializer
     
     def get_queryset(self):
         day = self.kwargs['day']
         iranian_time = self.kwargs['iranian_time']
-        query = SectionTeacher.objects.filter(section__day=day, section__iranian_time=iranian_time ).select_related('teacher')
+        query = SectionTeacher.objects.filter(section__day=day,
+                            section__iranian_time=iranian_time ).select_related('teacher')
         return query
     
     def get(self, request, *args, **kwargs):
@@ -151,7 +153,7 @@ class TeacherListSectionListAPIView(generics.ListAPIView):
     
 class TeacherListFreeSectionListAPIView(generics.ListAPIView):
     """
-    Gives a list of teachers of a given section
+    Gives a list of teachers of a given free section
     """
     permission_classes = [IsAuthenticated]
     serializer_class = TeacherListFreeSectionSerializer
@@ -169,7 +171,35 @@ class TeacherListFreeSectionListAPIView(generics.ListAPIView):
         queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
-             
+  
+class SetStudentToTeacherUpdateAPIView(generics.UpdateAPIView):
+    """
+    Set an a Student to a teacher in a free section
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = SetStudentToTeacherSerializer
+    queryset = FreeSectionTeacher.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        teacher = serializer.validated_data.get('teacher')
+        free_section = serializer.validated_data.get('free_section')
+        free_section_class = serializer.validated_data.get('free_Section_class')
+        
+        try:
+            free_section_teacher = self.get_queryset().get(teacher = teacher, free_section = free_section)
+        except FreeSectionTeacher.DoesNotExist:
+            return Response({'error': 'FreeSectionTeacher not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        free_section_teacher.free_section_class = free_section_class
+        free_section_teacher.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK) 
+  
+#----------------------------------------Section Creators API---------------------------------------#  
+           
 class CreateSectionsAPIView(APIView):
     """
     Creates all the of possible sections
@@ -186,12 +216,13 @@ class CreateSectionsAPIView(APIView):
                     Section.objects.create(day=day, iranian_time=iranian_time, chinese_time=chinese_time)
             return Response({'message': 'All sections created successfully'}, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'message': f'Error occurred while creating sections: "{e}" '}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'message': f'Error occurred while creating sections: "{e}" '}, 
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class CreateFreeSectionsAPIView(APIView):
-    '''
+    """
     Creates all the of possible free sections
-    '''
+    """
     def get(self, request, format=None):
         try:
             Section.objects.all().delete()
@@ -204,5 +235,6 @@ class CreateFreeSectionsAPIView(APIView):
                     FreeSection.objects.create(day=day, iranian_time=iranian_time, chinese_time=chinese_time)
             return Response({'message': 'All free sections created successfully'}, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'message': f'Error occurred while creating free sections: "{e}" '}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'message': f'Error occurred while creating free sections: "{e}" '},
+                                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         

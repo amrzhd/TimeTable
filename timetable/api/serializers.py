@@ -18,7 +18,6 @@ class TeacherSectionAdjustSerializer(serializers.ModelSerializer):
     class Meta:
         model = SectionTeacher
         fields =[
-            "chinese_time",
             "teacher",
             "section",
         ]
@@ -61,5 +60,14 @@ class TeacherListFreeSectionSerializer(serializers.ModelSerializer):
         model = FreeSectionTeacher
         fields = [
             "teacher_email",
-        ]    
+        ]
+        
+class SetStudentToTeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FreeSectionTeacher
+        fields =[
+            "teacher",
+            "free_section",
+            "free_section_class",
+        ]
     

@@ -8,12 +8,9 @@ from .views import (
     FreeSectionListAPIView,
     TeacherListSectionListAPIView,
     TeacherListFreeSectionListAPIView,
+    SetStudentToTeacherUpdateAPIView,
     )
 
-# router = DefaultRouter()
-# router.register(r'assign-teacher', TeacherAssignModelViewSet, basename='assign-teacher')
-
-# urlpatterns = router.urls
 urlpatterns = [
     path("teacher-free-section-adjust/", TeacherFreeSectionAdjustAPIView.as_view(
         {'post':'create','delete':'destroy'}), 
@@ -28,7 +25,11 @@ urlpatterns = [
     
     #Teacher lists based on a section
     path("teacher-list-section/<str:day>/<str:iranian_time>/", TeacherListSectionListAPIView.as_view(), name="teacher-list-section"),
-    path("teacher-list-free-section/<str:day>/<str:iranian_time>/", TeacherListFreeSectionListAPIView.as_view(), name="teacher-list-free-section"),
+    path("teacher-list-free-section/<str:day>/<str:iranian_time>/", 
+         TeacherListFreeSectionListAPIView.as_view(), name="teacher-list-free-section"),
+    
+    #Student:
+    path("set-student-to-teacher/", SetStudentToTeacherUpdateAPIView.as_view(), name="set-student-to-teacher"),
     
     #Section Creators:
     path("section-creator/", CreateSectionsAPIView.as_view(), name="section-creator"),

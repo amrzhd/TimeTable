@@ -1,7 +1,5 @@
 from timetable.models import Section, FreeSection, SectionTeacher, FreeSectionTeacher
 from .serializers import (
-    SectionCreateSerializer,
-    FreeSectionCreateSerializer,
     TeacherSectionAdjustSerializer,
     TeacherFreeSectionAdjustSerializer,
     FreeSectionListSerializer,
@@ -15,10 +13,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
-from accounts.models import User
-from ..models import Section, iranian_time_slots, DAYS_OF_WEEK
+from ..models import Section, FreeSection, iranian_time_slots, chinese_time_slots, DAYS_OF_WEEK
         
 class TeacherFreeSectionAdjustAPIView(viewsets.ModelViewSet):
     '''
@@ -179,46 +175,34 @@ class CreateSectionsAPIView(APIView):
     Creates all the of possible sections
     """
     def get(self, request, format=None):
-        sections_data = []
-        for day in DAYS_OF_WEEK:
-            for time_slot in iranian_time_slots:
-                section_data = {'day': day[0], 'iranian_time': time_slot[0]}
-                sections_data.append(section_data)
-
-        serializer = SectionCreateSerializer(data=sections_data, many=True)
-        if serializer.is_valid():
-            sections = []
-            for section_data in serializer.validated_data:
-                section = Section.objects.create(
-                    day=section_data['day'],
-                    iranian_time=section_data['iranian_time'],
-                )
-                sections.append(section)
+        try:
+            Section.objects.all().delete()
+            iranian_time_slots = [choice[0] for choice in Section.iranian_time.field.choices]
+            chinese_time_slots = [choice[0] for choice in Section.chinese_time.field.choices]
+            for day, _ in DAYS_OF_WEEK:
+                for i in range(len(iranian_time_slots)):
+                    iranian_time = iranian_time_slots[i]
+                    chinese_time = chinese_time_slots[i]
+                    Section.objects.create(day=day, iranian_time=iranian_time, chinese_time=chinese_time)
             return Response({'message': 'All sections created successfully'}, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message': f'Error occurred while creating sections: "{e}" '}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class CreateFreeSectionsAPIView(APIView):
     '''
     Creates all the of possible free sections
     '''
     def get(self, request, format=None):
-        free_sections_data = []
-        for day in DAYS_OF_WEEK:
-            for time_slot in iranian_time_slots:
-                free_section_data = {'day': day[0], 'iranian_time': time_slot[0]}
-                free_sections_data.append(free_section_data)
-
-        serializer = FreeSectionCreateSerializer(data=free_sections_data, many=True)
-        if serializer.is_valid():
-            free_sections = []
-            for free_section_data in serializer.validated_data:
-                free_section = FreeSection.objects.create(
-                    day=free_section_data['day'],
-                    iranian_time=free_section_data['iranian_time'],
-                )
-                free_sections.append(free_section)
+        try:
+            Section.objects.all().delete()
+            iranian_time_slots = [choice[0] for choice in FreeSection.iranian_time.field.choices]
+            chinese_time_slots = [choice[0] for choice in FreeSection.chinese_time.field.choices]
+            for day, _ in DAYS_OF_WEEK:
+                for i in range(len(iranian_time_slots)):
+                    iranian_time = iranian_time_slots[i]
+                    chinese_time = chinese_time_slots[i]
+                    FreeSection.objects.create(day=day, iranian_time=iranian_time, chinese_time=chinese_time)
             return Response({'message': 'All free sections created successfully'}, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message': f'Error occurred while creating free sections: "{e}" '}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         

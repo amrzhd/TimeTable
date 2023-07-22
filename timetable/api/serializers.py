@@ -18,28 +18,33 @@ class TeacherSectionAdjustSerializer(serializers.ModelSerializer):
     class Meta:
         model = SectionTeacher
         fields =[
+            "chinese_time",
             "teacher",
             "section",
         ]
         
 class SectionListSerializer(serializers.ModelSerializer):
     iranian_time = serializers.CharField(source='section.iranian_time')
+    chinese_time = serializers.CharField(source='section.chinese_time')
     day = serializers.CharField(source='section.day')
     class Meta:
         model = SectionTeacher
         fields = [
-            'iranian_time', 
-            'day',
+            "chinese_time",
+            "iranian_time", 
+            "day",
         ]
 
 class FreeSectionListSerializer(serializers.ModelSerializer):
     iranian_time = serializers.CharField(source='free_section.iranian_time')
+    chinese_time = serializers.CharField(source='free_section.chinese_time')
     day = serializers.CharField(source='free_section.day')
     class Meta:
         model = FreeSectionTeacher
         fields = [
-            'iranian_time', 
-            'day',
+            "chinese_time",
+            "iranian_time", 
+            "day",
         ]
     
 class TeacherListSectionSerializer(serializers.ModelSerializer):
@@ -47,7 +52,7 @@ class TeacherListSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SectionTeacher
         fields = [
-            'teacher_email',
+            "teacher_email",
         ]
     
 class TeacherListFreeSectionSerializer(serializers.ModelSerializer):
@@ -55,21 +60,6 @@ class TeacherListFreeSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FreeSectionTeacher
         fields = [
-            'teacher_email',
+            "teacher_email",
         ]    
     
-class SectionCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Section
-        fields = [
-            "iranian_time",
-            "day",
-        ]
-
-class FreeSectionCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FreeSection
-        fields = [
-            "iranian_time",
-            "day",
-        ]

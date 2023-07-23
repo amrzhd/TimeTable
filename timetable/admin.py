@@ -38,10 +38,10 @@ admin.site.register(Class, ClassAdminConfig)
 
 class SectionTeacherAdminConfig(admin.ModelAdmin):
     model = SectionTeacher
-    search_fields = ["teacher", "section","student"]
-    list_filter = ("teacher", "section", "student",)
-    list_display = ("teacher", "section", "student",)
-    add_fieldsets = ("teacher", "section", "student",)
+    search_fields = ["teacher", "section", "section_class",]
+    list_filter = ("teacher", "section", "section_class",)
+    list_display = ("teacher", "section",)
+    add_fieldsets = ("teacher", "section", "section_class",)
 
 admin.site.register(SectionTeacher, SectionTeacherAdminConfig)
 

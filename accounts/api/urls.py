@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     TeacherRegisterAPIView,
-    ManagerRegisterAPIView,
+    ConsultantRegisterAPIView,
     GiveTeacherIdUpdateAPIView,
     )
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -15,7 +15,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     #Register API:
     path("register-teacher/", TeacherRegisterAPIView.as_view(), name="register-teacher"),
-    path("register-manager/", ManagerRegisterAPIView.as_view(), name="register-manager"),
+    path("register-consultant/", ConsultantRegisterAPIView.as_view(), name="register-consultant"),
     
     #ID Assign api:
     path("give-teacher-id/", GiveTeacherIdUpdateAPIView.as_view(), name="teacher-id-assign"),

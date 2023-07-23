@@ -12,7 +12,11 @@ class TeacherRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email", 
+            "email",
+            "phone",
+            "national_code",
+            "first_name",
+            "last_name",
             "password",
             "password1",
         ]
@@ -28,7 +32,7 @@ class TeacherRegisterSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-class ManagerRegisterSerializer(serializers.ModelSerializer):
+class ConsultantRegisterSerializer(serializers.ModelSerializer):
     """
     Registration serializer with password checkup
     """
@@ -38,13 +42,17 @@ class ManagerRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email", 
+            "email",
+            "phone",
+            "national_code",
+            "first_name",
+            "last_name",
             "password",
             "password1",
         ]
 
     def validate(self, attr):
-        attr["is_manager"] = True
+        attr["is_consultant"] = True
         if attr["password"] != attr["password1"]:
             raise serializers.ValidationError({"details": "Passwords does not match"})
         attr.pop("password1")

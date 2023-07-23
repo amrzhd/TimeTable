@@ -42,16 +42,17 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("email address"), unique=True)
-    phone = models.CharField(_("phone"), max_length=11)
+    phone = models.CharField(_("phone"), max_length=11, unique=True)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
+    national_code = models.CharField(max_length=10)
     teacher_id = models.CharField(max_length=10)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
-    is_manager = models.BooleanField(default=False)
+    is_consultant = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
     
     teacher_id = models.CharField(max_length=20, null=True, blank=True)

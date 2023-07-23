@@ -51,6 +51,7 @@ class Section(models.Model):
     chinese_time = models.CharField(max_length=50, choices=chinese_time_slots, 
                                     default='4:30 - 5:15', null=False, blank=False)
     day = models.CharField(max_length=15, default='Sunday',choices=DAYS_OF_WEEK, null=False, blank=False)
+    #season
     
     def __str__(self):
         return f"{self.chinese_time}/ {self.iranian_time} - {self.day}"
@@ -66,7 +67,7 @@ class FreeSection(models.Model):
     chinese_time = models.CharField(max_length=50, choices=chinese_time_slots, 
                                     default='4:30 - 5:15', null=False, blank=False)
     day = models.CharField(max_length=15, default='Sunday',choices=DAYS_OF_WEEK, null=False, blank=False)
-    
+    #season
     def __str__(self):
         return f"{self.chinese_time}/ {self.iranian_time} - {self.day}"
     
@@ -86,7 +87,7 @@ class Class(models.Model):
 class SectionTeacher(models.Model):
     teacher = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, blank=False, null=True, on_delete=models.CASCADE)
-    student = models.CharField(null=True, blank=True, max_length=50)
+    section_class = models.ManyToManyField(Class, blank=True)
     
     def __str__(self):
         return f"{self.teacher}: {self.section}"

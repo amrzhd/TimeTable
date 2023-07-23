@@ -14,10 +14,10 @@ from .views import (
 urlpatterns = [
     path("teacher-free-section-adjust/", TeacherFreeSectionAdjustAPIView.as_view(
         {'post':'create','delete':'destroy'}), 
-         name="teacher-free-section-register"),
+         name="teacher-free-section-adjust"),
     path("teacher-section-adjust/", TeacherSectionAdjustAPIView.as_view(
         {'post':'create'}),
-         name="teacher-section-register"),
+         name="teacher-section-adjust"),
     
     #Section Lists:
     path("section-list/<str:teacher_email>/", SectionListAPIView.as_view(), name="section-list"),

@@ -40,7 +40,7 @@ class TeacherFreeSectionAdjustAPIView(viewsets.ModelViewSet):
                 )
             except IntegrityError as e:
                 return Response(
-                    {'message': f'Teacher has been added before {e}'},
+                    {'error': f'Teacher has been added before {e}'},
                     status=status.HTTP_406_NOT_ACCEPTABLE,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

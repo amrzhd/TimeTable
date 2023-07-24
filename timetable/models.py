@@ -94,7 +94,7 @@ class SectionTeacher(models.Model):
     
 class FreeSectionTeacher(models.Model):
     teacher = models.ForeignKey(User, blank=False, on_delete=models.CASCADE)
-    free_section = models.ForeignKey(FreeSection, blank=True, null=True, on_delete=models.CASCADE)
+    free_section = models.ForeignKey(Section, blank=True, null=True, on_delete=models.CASCADE)
     free_section_class = models.ForeignKey(Class, blank=True, null=True, on_delete=models.CASCADE)
     
     def __str__(self):

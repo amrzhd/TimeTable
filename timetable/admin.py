@@ -19,10 +19,10 @@ admin.site.register(Section, SectionAdminConfig)
 
 
 class FreeSectionAdminConfig(admin.ModelAdmin):
-    model = Section
-    search_fields = ["section_id", "iranian_time", "day", "chinese_time",]
-    list_filter = ("section_id", "iranian_time", "day", "chinese_time",)
-    list_display = ("section_id", "iranian_time", "day", "chinese_time",)
+    model = FreeSection
+    search_fields = ["iranian_time", "day", "chinese_time",]
+    list_filter = ("iranian_time", "day", "chinese_time",)
+    list_display = ("iranian_time", "day", "chinese_time",)
     add_fieldsets = ("iranian_time", "day", "chinese_time",)    
 
 admin.site.register(FreeSection, FreeSectionAdminConfig)

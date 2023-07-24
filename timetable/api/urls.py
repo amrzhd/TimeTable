@@ -9,6 +9,7 @@ from .views import (
     TeacherListSectionListAPIView,
     TeacherListFreeSectionListAPIView,
     SetClassUpdateAPIView,
+    AddFreeSectionsToSectionsCreateAPIView,
     )
 
 urlpatterns = [
@@ -30,6 +31,9 @@ urlpatterns = [
     
     #Class:
     path("set-class/", SetClassUpdateAPIView.as_view(), name="set-class"),
+    
+    #Adding Free Sections to Section:
+    path("add-free-section-to-section/", AddFreeSectionsToSectionsCreateAPIView.as_view(), name = "add-free-section-to-section"),
     
     #Section Creators:
     path("section-creator/", CreateSectionsAPIView.as_view(), name="section-creator"),

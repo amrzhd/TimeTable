@@ -24,7 +24,7 @@ class TeacherRegisterAPIView(generics.GenericAPIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"message": f"Teacher has registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ConsultantRegisterAPIView(generics.GenericAPIView):
@@ -40,7 +40,7 @@ class ConsultantRegisterAPIView(generics.GenericAPIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"message": f"Consultant has registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GiveTeacherIdUpdateAPIView(generics.UpdateAPIView):
@@ -66,5 +66,5 @@ class GiveTeacherIdUpdateAPIView(generics.UpdateAPIView):
         user.teacher_id = teacher_id
         user.save()
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'message': 'The id is given to the teacher successfully!'}, status=status.HTTP_200_OK)
     

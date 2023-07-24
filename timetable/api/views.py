@@ -7,6 +7,7 @@ from .serializers import (
     TeacherListSectionSerializer,
     TeacherListFreeSectionSerializer,
     SetClassSerializer,
+    AddFreeSectionsToSectionSerializer,
     )
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -107,8 +108,8 @@ class FreeSectionListAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = FreeSectionListSerializer
     def get_queryset(self):
-        user_email = self.kwargs['teacher_email']
-        query = FreeSectionTeacher.objects.filter(teacher__email=user_email).select_related('free_section')
+        teacher_id = self.kwargs['teacher_id']
+        query = FreeSectionTeacher.objects.filter(teacher__teacher_id=teacher_id).select_related('free_section')
         return query
 
     def get(self, request, *args, **kwargs):
@@ -124,7 +125,7 @@ class SectionListAPIView(generics.ListAPIView):
     serializer_class = SectionListSerializer
     def get_queryset(self):
         user_email = self.kwargs['teacher_email']
-        query = SectionTeacher.objects.filter(teacher__email=user_email).select_related('section')
+        query = SectionTeacher.objects.filter(teacher__email=user_email)
         return query
 
     def get(self, request, *args, **kwargs):
@@ -195,6 +196,32 @@ class SetClassUpdateAPIView(generics.UpdateAPIView):
         free_section_teacher.free_section_class = free_section_class
         free_section_teacher.save()
         return Response({'message': f'Class "{free_section_class}" has been set .'}, status=status.HTTP_200_OK) 
+    
+    
+class AddFreeSectionsToSectionsCreateAPIView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AddFreeSectionsToSectionSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        teacher = serializer.validated_data.get('teacher')
+        free_section = serializer.validated_data.get('free_section')
+        try:
+            section_teacher = FreeSectionTeacher.objects.filter(
+                teacher=teacher,free_section=free_section ).select_related('teacher')
+            section_section = FreeSectionTeacher.objects.filter(
+                teacher=teacher,free_section=free_section ).select_related('free_section')
+            #free_section_teacher = self.get_queryset().get(teacher=teacher, free_section=free_section)
+        except FreeSectionTeacher.DoesNotExist:
+            return Response({'error': 'FreeSectionTeacher not found.'}, status=status.HTTP_404_NOT_FOUND)
+        SectionTeacher.objects.create(
+                teacher=section_teacher, section=section_section
+        )
+        return Response({'message': 'Section has been set .'}, status=status.HTTP_200_OK) 
+        
+        
+        
   
 #----------------------------------------Section Creators API---------------------------------------#  
            
@@ -223,7 +250,7 @@ class CreateFreeSectionsAPIView(APIView):
     """
     def get(self, request, format=None):
         try:
-            Section.objects.all().delete()
+            FreeSection.objects.all().delete()
             iranian_time_slots = [choice[0] for choice in FreeSection.iranian_time.field.choices]
             chinese_time_slots = [choice[0] for choice in FreeSection.chinese_time.field.choices]
             for day, _ in DAYS_OF_WEEK:

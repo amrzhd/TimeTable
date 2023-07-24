@@ -1,7 +1,7 @@
 
 from rest_framework import serializers
 from ..models import Section, FreeSection, SectionTeacher, FreeSectionTeacher
-# from accounts.models import User
+from accounts.models import User
 
 class TeacherFreeSectionAdjustSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,12 +26,23 @@ class SectionListSerializer(serializers.ModelSerializer):
     iranian_time = serializers.CharField(source='section.iranian_time')
     chinese_time = serializers.CharField(source='section.chinese_time')
     day = serializers.CharField(source='section.day')
+    #section_class = serializers.CharField(source='teacher.email')
+
     class Meta:
         model = SectionTeacher
         fields = [
             "chinese_time",
             "iranian_time", 
             "day",
+            "section_class",
+        ]
+
+class AddFreeSectionsToSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FreeSectionTeacher
+        fields = [
+            "teacher",
+            "free_section",
         ]
 
 class FreeSectionListSerializer(serializers.ModelSerializer):

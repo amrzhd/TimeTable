@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
     TeacherRegisterAPIView,
+    SupervisorRegisterAPIView,
     ConsultantRegisterAPIView,
     GiveTeacherIdUpdateAPIView,
     )
@@ -15,6 +16,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     #Register API:
     path("register-teacher/", TeacherRegisterAPIView.as_view(), name="register-teacher"),
+    path("register-supervisor/", SupervisorRegisterAPIView.as_view(), name="register-supervisor"),
     path("register-consultant/", ConsultantRegisterAPIView.as_view(), name="register-consultant"),
     
     #ID Assign api:

@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from accounts.models import User
 from .serializers import (
     TeacherRegisterSerializer,
+    SupervisorRegisterSerializer,
     ConsultantRegisterSerializer,
     GiveTeacherIdSerializer,
     )
@@ -26,6 +27,22 @@ class TeacherRegisterAPIView(generics.GenericAPIView):
             serializer.save()
             return Response({"message": f"Teacher has registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+ 
+class SupervisorRegisterAPIView(generics.GenericAPIView):
+    """
+    Creates a new consultant user with the given info and credentials
+    """
+
+    serializer_class = SupervisorRegisterSerializer
+    
+    def post(self, request, *args, **kwargs):
+
+        serializer = SupervisorRegisterSerializer(data=request.data, many=False)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": f"Supervisor has registered successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
     
 class ConsultantRegisterAPIView(generics.GenericAPIView):
     """

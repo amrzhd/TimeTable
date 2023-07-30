@@ -1,18 +1,28 @@
 
 from rest_framework import serializers
-from ..models import Section, FreeSection, SectionTeacher, FreeSectionTeacher
+from ..models import Section, SectionTeacher, FreeSectionTeacher, Class
 from accounts.models import User
 
-class TeacherFreeSectionAdjustSerializer(serializers.ModelSerializer):
+class TeacherSetFreeSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FreeSectionTeacher
         fields =[
             "free_section",
         ]
-    
+        
     def create(self, validated_data):
         validated_data["teacher"] = self.context.get("request").user
         return super().create(validated_data)
+    
+        
+class ConsultantSetFreeSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FreeSectionTeacher
+        fields =[
+            "free_section",
+            "teacher",
+        ]
+            
     
 class TeacherSectionAdjustSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,6 +53,7 @@ class AddFreeSectionsToSectionSerializer(serializers.ModelSerializer):
         fields = [
             "teacher",
             "free_section",
+            "free_section_class",
         ]
 
 class FreeSectionListSerializer(serializers.ModelSerializer):
@@ -56,6 +67,7 @@ class FreeSectionListSerializer(serializers.ModelSerializer):
             "iranian_time", 
             "day",
         ]
+    
     
 class TeacherListSectionSerializer(serializers.ModelSerializer):
     teacher_email = serializers.CharField(source='teacher.email')

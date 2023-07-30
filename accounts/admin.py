@@ -6,12 +6,12 @@ from django.contrib.auth.admin import UserAdmin
 class UserAdminConfig(UserAdmin):
     model = User
     search_fields = ("email","teacher_id")
-    list_filter = ("email", "is_active", "is_staff", "is_teacher", "is_consultant", "teacher_id")
+    list_filter = ("email", "is_active", "is_staff", "is_teacher", "is_supervisor", "is_consultant", "teacher_id")
     ordering = ("-created_date",)
-    list_display = ("email", "is_active", "is_staff", "is_teacher","is_consultant", "teacher_id")
+    list_display = ("email", "is_active", "is_staff", "is_teacher", "is_supervisor", "is_consultant", "teacher_id")
     fieldsets = (
         ("Authentication", {"fields": ("email","teacher_id")}),
-        ("Permissions", {"fields": ("is_staff", "is_active", "is_teacher","is_consultant")}),
+        ("Permissions", {"fields": ("is_staff", "is_active", "is_teacher", "is_supervisor", "is_consultant")}),
         (
             "Group Permissions",
             {
@@ -35,6 +35,7 @@ class UserAdminConfig(UserAdmin):
                     "is_active",
                     "is_staff",
                     "is_teacher",
+                    "is_supervisor",
                     "is_consultant",
                     "teacher_id",
                 ),

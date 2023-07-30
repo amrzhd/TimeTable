@@ -52,6 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
+    is_supervisor = models.BooleanField(default=False)
     is_consultant = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
     

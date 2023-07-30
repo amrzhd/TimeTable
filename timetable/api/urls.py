@@ -2,28 +2,27 @@ from django.urls import path
 from .views import (
     CreateSectionsAPIView,
     CreateFreeSectionsAPIView,
-    TeacherFreeSectionAdjustAPIView,
-    TeacherSectionAdjustAPIView,
+    TeacherSetFreeSectionAPIView,
     SectionListAPIView,
     FreeSectionListAPIView,
     TeacherListSectionListAPIView,
     TeacherListFreeSectionListAPIView,
     SetClassUpdateAPIView,
     AddFreeSectionsToSectionsCreateAPIView,
+    ConsultantSetFreeSectionAPIView,
+    TeacherFreeSectionListAPIView,
     )
 
 urlpatterns = [
-    path("teacher-free-section-adjust/", TeacherFreeSectionAdjustAPIView.as_view(
-        {'post':'create','delete':'destroy'}), 
-         name="teacher-free-section-adjust"),
-    path("teacher-section-adjust/", TeacherSectionAdjustAPIView.as_view(
-        {'post':'create'}),
-         name="teacher-section-adjust"),
+    
+    #Teacher Set Free section
+    path("teacher-set-free-section/", TeacherSetFreeSectionAPIView.as_view(), name="teacher-set-free-section"),
+    path("consultant-set-free-section/", ConsultantSetFreeSectionAPIView.as_view(), name="consultant-set-free-section"),
     
     #Section Lists:
-    path("section-list/<str:teacher_email>/", SectionListAPIView.as_view(), name="section-list"),
-    path("free-section-list/<str:teacher_email>/", FreeSectionListAPIView.as_view(), name="free-section-list"),
-    
+    path("section-list/<str:teacher_id>/", SectionListAPIView.as_view(), name="section-list"),
+    path("free-section-list/<str:teacher_id>/", FreeSectionListAPIView.as_view(), name="free-section-list"),
+    path("teacher-free-section-list/", TeacherFreeSectionListAPIView.as_view(), name="teacher-free-section-list"),
     #Teacher lists based on a section
     path("teacher-list-section/<str:day>/<str:iranian_time>/", TeacherListSectionListAPIView.as_view(), name="teacher-list-section"),
     path("teacher-list-free-section/<str:day>/<str:iranian_time>/", 

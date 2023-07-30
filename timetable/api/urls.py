@@ -1,7 +1,6 @@
 from django.urls import path
 from .views import (
     CreateSectionsAPIView,
-    CreateFreeSectionsAPIView,
     TeacherSetFreeSectionAPIView,
     SectionListAPIView,
     FreeSectionListAPIView,
@@ -36,5 +35,4 @@ urlpatterns = [
     
     #Section Creators:
     path("section-creator/", CreateSectionsAPIView.as_view(), name="section-creator"),
-    path("free-section-creator/", CreateFreeSectionsAPIView.as_view(), name="free-section-creator"),
 ]

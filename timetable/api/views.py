@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db import IntegrityError
-from ..models import Section, iranian_time_slots, chinese_time_slots, DAYS_OF_WEEK
+from ..models import Section, iranian_time_slots, chinese_time_slots, DAYS_OF_WEEK, MONTHS_OF_YEAR
 from .permissions import IsConsultantAuthenticated
         
 from rest_framework import generics, status
@@ -214,32 +214,15 @@ class CreateSectionsAPIView(APIView):
             Section.objects.all().delete()
             iranian_time_slots = [choice[0] for choice in Section.iranian_time.field.choices]
             chinese_time_slots = [choice[0] for choice in Section.chinese_time.field.choices]
-            for day, _ in DAYS_OF_WEEK:
-                for i in range(len(iranian_time_slots)):
-                    iranian_time = iranian_time_slots[i]
-                    chinese_time = chinese_time_slots[i]
-                    Section.objects.create(day=day, iranian_time=iranian_time, chinese_time=chinese_time)
+            for month,_ in  MONTHS_OF_YEAR:
+                for day, _ in DAYS_OF_WEEK:
+                    for i in range(len(iranian_time_slots)):
+                        iranian_time = iranian_time_slots[i]
+                        chinese_time = chinese_time_slots[i]
+                        Section.objects.create(month=month, day=day, iranian_time=iranian_time, chinese_time=chinese_time)
             return Response({'message': 'All sections created successfully'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'message': f'Error occurred while creating sections: "{e}" '}, 
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-class CreateFreeSectionsAPIView(APIView):
-    """
-    Creates all the of possible free sections
-    """
-    def get(self, request, format=None):
-        try:
-            FreeSection.objects.all().delete()
-            iranian_time_slots = [choice[0] for choice in FreeSection.iranian_time.field.choices]
-            chinese_time_slots = [choice[0] for choice in FreeSection.chinese_time.field.choices]
-            for day, _ in DAYS_OF_WEEK:
-                for i in range(len(iranian_time_slots)):
-                    iranian_time = iranian_time_slots[i]
-                    chinese_time = chinese_time_slots[i]
-                    FreeSection.objects.create(day=day, iranian_time=iranian_time, chinese_time=chinese_time)
-            return Response({'message': 'All free sections created successfully'}, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({'message': f'Error occurred while creating free sections: "{e}" '},
-                                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         

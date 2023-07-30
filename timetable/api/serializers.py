@@ -36,14 +36,15 @@ class SectionListSerializer(serializers.ModelSerializer):
     iranian_time = serializers.CharField(source='section.iranian_time')
     chinese_time = serializers.CharField(source='section.chinese_time')
     day = serializers.CharField(source='section.day')
-    #section_class = serializers.CharField(source='teacher.email')
-
+    month = serializers.CharField(source='section.month')
+    
     class Meta:
         model = SectionTeacher
         fields = [
             "chinese_time",
             "iranian_time", 
             "day",
+            "month",
             "section_class",
         ]
 
@@ -60,12 +61,15 @@ class FreeSectionListSerializer(serializers.ModelSerializer):
     iranian_time = serializers.CharField(source='free_section.iranian_time')
     chinese_time = serializers.CharField(source='free_section.chinese_time')
     day = serializers.CharField(source='free_section.day')
+    month = serializers.CharField(source='free_section.month')
+
     class Meta:
         model = FreeSectionTeacher
         fields = [
             "chinese_time",
             "iranian_time", 
             "day",
+            "month",
         ]
     
     

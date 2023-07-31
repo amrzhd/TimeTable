@@ -8,7 +8,7 @@ from .serializers import (
     TeacherRegisterSerializer,
     SupervisorRegisterSerializer,
     ConsultantRegisterSerializer,
-    GiveTeacherIdSerializer,
+    GiveUserIdSerializer,
     )
 
     
@@ -60,12 +60,12 @@ class ConsultantRegisterAPIView(generics.GenericAPIView):
             return Response({"message": f"Consultant has registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class GiveTeacherIdUpdateAPIView(generics.UpdateAPIView):
+class GiveUserIdUpdateAPIView(generics.UpdateAPIView):
     """
     Assigns an ID to a teacher
     """
     permission_classes = [IsAuthenticated]
-    serializer_class = GiveTeacherIdSerializer
+    serializer_class = GiveUserIdSerializer
     queryset = User.objects.all()
 
     def update(self, request, *args, **kwargs):
@@ -73,15 +73,15 @@ class GiveTeacherIdUpdateAPIView(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
 
         email = serializer.validated_data.get('email')
-        teacher_id = serializer.validated_data.get('teacher_id')
+        personal_id = serializer.validated_data.get('personal_id')
 
         try:
             user = self.get_queryset().get(email=email)
         except User.DoesNotExist:
-            return Response({'error': 'Teacher not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        user.teacher_id = teacher_id
+        user.personal_id = personal_id
         user.save()
 
-        return Response({'message': 'The id is given to the teacher successfully!'}, status=status.HTTP_200_OK)
+        return Response({'message': 'The id is given to the user successfully!'}, status=status.HTTP_200_OK)
     

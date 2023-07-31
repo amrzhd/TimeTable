@@ -89,11 +89,11 @@ class ConsultantRegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-class GiveTeacherIdSerializer(serializers.Serializer):
+class GiveUserIdSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    teacher_id = serializers.CharField(max_length=20)
+    personal_id = serializers.CharField(max_length=20)
 
     def update(self, instance, validated_data):
-        instance.teacher_id = validated_data['teacher_id']
+        instance.personal_id = validated_data["personal_id"]
         instance.save()
         return instance

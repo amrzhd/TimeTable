@@ -16,7 +16,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db import IntegrityError
 from ..models import Section, iranian_time_slots, chinese_time_slots, DAYS_OF_WEEK, MONTHS_OF_YEAR
-from .permissions import IsConsultantAuthenticated
+from .permissions import IsConsultant, IsSupervisor
         
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -51,7 +51,7 @@ class TeacherFreeSectionListAPIView(generics.ListAPIView):
     """
     Gives a list of free sections of a specific teacher (based on teacher id)
     """
-    permission_classes = [IsConsultantAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = FreeSectionListSerializer
     def get_queryset(self):
         query = FreeSectionTeacher.objects.all().select_related('free_section')
@@ -66,7 +66,7 @@ class ConsultantSetFreeSectionAPIView(generics.CreateAPIView):
     """
     Teacher sets the free sections
     """
-    permission_classes = [IsConsultantAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = ConsultantSetFreeSectionSerializer
         
     def post(self,request):
@@ -84,11 +84,11 @@ class FreeSectionListAPIView(generics.ListAPIView):
     """
     Gives a list of free sections of a specific teacher (based on teacher id)
     """
-    permission_classes = [IsConsultantAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = FreeSectionListSerializer
     def get_queryset(self):
-        teacher_id = self.kwargs['teacher_id'].upper()
-        query = FreeSectionTeacher.objects.filter(teacher__teacher_id=teacher_id).select_related('free_section')
+        personal_id = self.kwargs['personal_id'].upper()
+        query = FreeSectionTeacher.objects.filter(teacher__personal_id=personal_id).select_related('free_section')
         return query
 
     def get(self, request, *args, **kwargs):
@@ -100,11 +100,11 @@ class SectionListAPIView(generics.ListAPIView):
     """
     Gives a list of sections of a specific teacher (based on teacher id)
     """
-    permission_classes = [IsConsultantAuthenticated]
+    permission_classes = [IsSupervisor, IsConsultant, IsAuthenticated]
     serializer_class = SectionListSerializer
     def get_queryset(self):
-        teacher_id = self.kwargs['teacher_id']
-        query = SectionTeacher.objects.filter(teacher__teacher_id=teacher_id).select_related('section')
+        personal_id = self.kwargs['personal_id']
+        query = SectionTeacher.objects.filter(teacher__personal_id=personal_id).select_related('section')
         return query
 
     def get(self, request, *args, **kwargs):
@@ -116,7 +116,7 @@ class TeacherListSectionListAPIView(generics.ListAPIView):
     """
     Gives a list of teachers of a given section
     """
-    permission_classes = [IsConsultantAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = TeacherListSectionSerializer
     
     def get_queryset(self):
@@ -135,7 +135,7 @@ class TeacherListFreeSectionListAPIView(generics.ListAPIView):
     """
     Gives a list of teachers of a given free section
     """
-    permission_classes = [IsConsultantAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = TeacherListFreeSectionSerializer
     
     def get_queryset(self):
@@ -154,7 +154,7 @@ class SetClassUpdateAPIView(generics.UpdateAPIView):
     """
     Set an a Student to a teacher in a free section
     """
-    permission_classes = [IsConsultantAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = SetClassSerializer
     queryset = FreeSectionTeacher.objects.all()
 
@@ -176,7 +176,7 @@ class SetClassUpdateAPIView(generics.UpdateAPIView):
     
     
 class AddFreeSectionsToSectionsCreateAPIView(generics.CreateAPIView):
-    permission_classes = [IsConsultantAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = AddFreeSectionsToSectionSerializer
 
     def create(self, request, *args, **kwargs):

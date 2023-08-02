@@ -56,7 +56,7 @@ class TeacherFreeSectionListAPIView(generics.ListAPIView):
     serializer_class = FreeSectionListSerializer
     filter_backends = [DjangoFilterBackend]
     def get_queryset(self):
-        query = FreeSectionTeacher.objects.all().select_related('free_section')
+        query = FreeSectionTeacher.objects.all().select_related('section')
         return query
 
     def get(self, request, *args, **kwargs):
@@ -88,16 +88,23 @@ class FreeSectionListAPIView(generics.ListAPIView):
     """
     permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = FreeSectionListSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["day"]
+    filter_backends = [DjangoFilterBackend, SectionFilterBackend]
+    filterset_fields = {
+        "section__day": ['exact'],
+        "section__iranian_time": ['exact'],
+        "section__chinese_time": ['exact'],
+        "section__month": ['exact'],
+        "section__year": ['exact'],
+    }   
     def get_queryset(self):
         personal_id = self.kwargs['personal_id'].upper()
-        query = FreeSectionTeacher.objects.filter(teacher__personal_id=personal_id).select_related('free_section')
+        query = FreeSectionTeacher.objects.filter(teacher__personal_id=personal_id).select_related('section')
         return query
 
     def get(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
+        query = self.get_queryset()
+        filtered_query = self.filter_queryset(query)
+        serializer = self.serializer_class(filtered_query, many=True)
         return Response(serializer.data)  
     
 

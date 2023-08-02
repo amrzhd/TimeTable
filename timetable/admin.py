@@ -37,10 +37,10 @@ admin.site.register(SectionTeacher, SectionTeacherAdminConfig)
 
 class FreeSectionTeacherAdminConfig(admin.ModelAdmin):
     model = FreeSectionTeacher
-    search_fields = ["teacher", "free_section", "free_section_class", ]
-    list_filter = ("teacher", "free_section", "free_section_class", )
-    list_display = ("teacher", "free_section", "free_section_class", )
-    add_fieldsets = ("teacher", "free_section", "free_section_class", )
+    search_fields = ["teacher", "section", "section_class", ]
+    list_filter = ("teacher", "section", "section_class", )
+    list_display = ("teacher", "section", "section_class", )
+    add_fieldsets = ("teacher", "section", "section_class", )
 
 admin.site.register(FreeSectionTeacher, FreeSectionTeacherAdminConfig)
 

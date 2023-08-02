@@ -7,7 +7,7 @@ class TeacherSetFreeSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FreeSectionTeacher
         fields =[
-            "free_section",
+            "section",
         ]
         
     def create(self, validated_data):
@@ -19,7 +19,7 @@ class ConsultantSetFreeSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FreeSectionTeacher
         fields =[
-            "free_section",
+            "section",
             "teacher",
         ]
             
@@ -71,24 +71,42 @@ class AddFreeSectionsToSectionSerializer(serializers.ModelSerializer):
         model = FreeSectionTeacher
         fields = [
             "teacher",
-            "free_section",
-            "free_section_class",
+            "section",
+            "section_class",
         ]
 
 class FreeSectionListSerializer(serializers.ModelSerializer):
-    iranian_time = serializers.CharField(source='free_section.iranian_time')
-    chinese_time = serializers.CharField(source='free_section.chinese_time')
-    day = serializers.CharField(source='free_section.day')
-    month = serializers.CharField(source='free_section.month')
-
+    section__chinese_time = serializers.SerializerMethodField()
+    section__iranian_time = serializers.SerializerMethodField()
+    section__day = serializers.SerializerMethodField()
+    section__month = serializers.SerializerMethodField()
+    section__year = serializers.SerializerMethodField()
+    
     class Meta:
         model = FreeSectionTeacher
         fields = [
-            "chinese_time",
-            "iranian_time", 
-            "day",
-            "month",
+            "section__chinese_time",
+            "section__iranian_time", 
+            "section__day",
+            "section__month",
+            "section__year",
+            "section_class",
         ]
+
+    def get_section__chinese_time(self, obj):
+        return obj.section.chinese_time
+
+    def get_section__iranian_time(self, obj):
+        return obj.section.iranian_time
+
+    def get_section__day(self, obj):
+        return obj.section.day
+
+    def get_section__month(self, obj):
+        return obj.section.month
+    
+    def get_section__year(self, obj):
+        return obj.section.year
     
     
 class TeacherListSectionSerializer(serializers.ModelSerializer):
@@ -112,7 +130,7 @@ class SetClassSerializer(serializers.ModelSerializer):
         model = FreeSectionTeacher
         fields =[
             "teacher",
-            "free_section",
-            "free_section_class",
+            "section",
+            "section_class",
         ]
     

@@ -1,4 +1,3 @@
-from timetable.models import Section, SectionTeacher, FreeSectionTeacher
 from .serializers import (
     TeacherSetFreeSectionSerializer,
     FreeSectionListSerializer,
@@ -14,14 +13,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from django.db import IntegrityError
-from ..models import Section, iranian_time_slots, chinese_time_slots, DAYS_OF_WEEK, MONTHS_OF_YEAR
-from .permissions import IsConsultant, IsSupervisor
-        
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import TeacherSetFreeSectionSerializer
+
+from timetable.models import Section, SectionTeacher, FreeSectionTeacher
+from django_filters.rest_framework import DjangoFilterBackend
+from ..filters import SectionFilterBackend
+from django.db import IntegrityError
+from ..models import Section, iranian_time_slots, chinese_time_slots, DAYS_OF_WEEK, MONTHS_OF_YEAR
+from core.permissions import IsConsultant, IsSupervisor
 
 #---------------------------------Views for Teachers ---------------------------------#
 
@@ -53,6 +54,7 @@ class TeacherFreeSectionListAPIView(generics.ListAPIView):
     """
     permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = FreeSectionListSerializer
+    filter_backends = [DjangoFilterBackend]
     def get_queryset(self):
         query = FreeSectionTeacher.objects.all().select_related('free_section')
         return query
@@ -86,6 +88,8 @@ class FreeSectionListAPIView(generics.ListAPIView):
     """
     permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = FreeSectionListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["day"]
     def get_queryset(self):
         personal_id = self.kwargs['personal_id'].upper()
         query = FreeSectionTeacher.objects.filter(teacher__personal_id=personal_id).select_related('free_section')
@@ -96,20 +100,30 @@ class FreeSectionListAPIView(generics.ListAPIView):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)  
     
+
 class SectionListAPIView(generics.ListAPIView):
     """
     Gives a list of sections of a specific teacher (based on teacher id)
     """
     permission_classes = [IsSupervisor, IsConsultant, IsAuthenticated]
     serializer_class = SectionListSerializer
+    filter_backends = [DjangoFilterBackend, SectionFilterBackend]
+    filterset_fields = {
+        "section__day": ['exact'],
+        "section__iranian_time": ['exact'],
+        "section__chinese_time": ['exact'],
+        "section__month": ['exact'],
+        "section__year": ['exact'],
+    }
     def get_queryset(self):
         personal_id = self.kwargs['personal_id']
-        query = SectionTeacher.objects.filter(teacher__personal_id=personal_id).select_related('section')
+        query = SectionTeacher.objects.filter(teacher__personal_id=personal_id).select_related('section')     
         return query
 
     def get(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.serializer_class(queryset, many=True)
+        query = self.get_queryset()
+        filtered_query = self.filter_queryset(query)
+        serializer = self.serializer_class(filtered_query, many=True)
         return Response(serializer.data)
 
 class TeacherListSectionListAPIView(generics.ListAPIView):
@@ -118,7 +132,7 @@ class TeacherListSectionListAPIView(generics.ListAPIView):
     """
     permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = TeacherListSectionSerializer
-    
+    filter_backends = [DjangoFilterBackend]
     def get_queryset(self):
         day = self.kwargs['day']
         iranian_time = self.kwargs['iranian_time']
@@ -137,6 +151,8 @@ class TeacherListFreeSectionListAPIView(generics.ListAPIView):
     """
     permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = TeacherListFreeSectionSerializer
+    filter_backends = [DjangoFilterBackend]
+    # filterset_fields = []
     
     def get_queryset(self):
         day = self.kwargs['day']
@@ -200,11 +216,7 @@ class AddFreeSectionsToSectionsCreateAPIView(generics.CreateAPIView):
         
         return Response({'message': 'Section has been set.'}, status=status.HTTP_200_OK)
         
-        
-        
-  
-#----------------------------------------Section Creators API---------------------------------------#  
-           
+                   
 class CreateSectionsAPIView(APIView):
     """
     Creates all the of possible sections
@@ -222,7 +234,7 @@ class CreateSectionsAPIView(APIView):
                         Section.objects.create(month=month, day=day, iranian_time=iranian_time, chinese_time=chinese_time)
             return Response({'message': 'All sections created successfully'}, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'message': f'Error occurred while creating sections: "{e}" '}, 
+            return Response({'error': f'{e}'},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         

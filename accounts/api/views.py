@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from core.permissions import IsConsultant, IsSupervisor
 from django.shortcuts import get_object_or_404
 from accounts.models import User
 from .serializers import (
@@ -64,7 +65,7 @@ class GiveUserIdUpdateAPIView(generics.UpdateAPIView):
     """
     Assigns an ID to a teacher
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = GiveUserIdSerializer
     queryset = User.objects.all()
 

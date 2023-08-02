@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "timetable.apps.TimetableConfig",
     "silk",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -162,6 +163,8 @@ REST_FRAMEWORK = {
     ],
     # drf_spectacular
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 if not DEBUG:
     REST_FRAMEWORK.update(

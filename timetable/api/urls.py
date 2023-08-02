@@ -19,8 +19,8 @@ urlpatterns = [
     path("consultant-set-free-section/", ConsultantSetFreeSectionAPIView.as_view(), name="consultant-set-free-section"),
     
     #Section Lists:
-    path("section-list/<str:teacher_id>/", SectionListAPIView.as_view(), name="section-list"),
-    path("free-section-list/<str:teacher_id>/", FreeSectionListAPIView.as_view(), name="free-section-list"),
+    path("section-list/<str:personal_id>/", SectionListAPIView.as_view(), name="section-list"),
+    path("free-section-list/<str:personal_id>/", FreeSectionListAPIView.as_view(), name="free-section-list"),
     path("teacher-free-section-list/", TeacherFreeSectionListAPIView.as_view(), name="teacher-free-section-list"),
     #Teacher lists based on a section
     path("teacher-list-section/<str:day>/<str:iranian_time>/", TeacherListSectionListAPIView.as_view(), name="teacher-list-section"),

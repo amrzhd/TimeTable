@@ -164,8 +164,8 @@ class TeacherListFreeSectionListAPIView(generics.ListAPIView):
     def get_queryset(self):
         day = self.kwargs['day']
         iranian_time = self.kwargs['iranian_time']
-        query = FreeSectionTeacher.objects.filter(free_section__day=day, 
-            free_section__iranian_time=iranian_time).select_related('teacher')
+        query = FreeSectionTeacher.objects.filter(section__day=day, 
+            section__iranian_time=iranian_time).select_related('teacher')
         return query
     
     def get(self, request, *args, **kwargs):
@@ -186,16 +186,16 @@ class SetClassUpdateAPIView(generics.UpdateAPIView):
         serializer.is_valid(raise_exception=True)
 
         teacher = serializer.validated_data.get('teacher')
-        free_section = serializer.validated_data.get('free_section')
-        free_section_class = serializer.validated_data.get('free_section_class')
+        section = serializer.validated_data.get('section')
+        section_class = serializer.validated_data.get('section_class')
         
         try:
-            free_section_teacher = self.get_queryset().get(teacher=teacher, free_section=free_section)
+            free_section_teacher = self.get_queryset().get(teacher=teacher, section=section)
         except FreeSectionTeacher.DoesNotExist:
             return Response({'error': 'FreeSectionTeacher not found.'}, status=status.HTTP_404_NOT_FOUND)
-        free_section_teacher.free_section_class = free_section_class
+        free_section_teacher.section_class = section_class
         free_section_teacher.save()
-        return Response({'message': f'Class "{free_section_class}" has been set .'}, status=status.HTTP_200_OK) 
+        return Response({'message': f'Class "{section_class}" has been set .'}, status=status.HTTP_200_OK) 
     
     
 class AddFreeSectionsToSectionsCreateAPIView(generics.CreateAPIView):
@@ -241,7 +241,6 @@ class CreateSectionsAPIView(APIView):
                         Section.objects.create(month=month, day=day, iranian_time=iranian_time, chinese_time=chinese_time)
             return Response({'message': 'All sections created successfully'}, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'error': f'{e}'},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': f'{e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         

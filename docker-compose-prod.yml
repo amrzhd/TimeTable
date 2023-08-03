@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    command: sh -c "python3 manage.py makemigrations --noinput && \
+                    python3 manage.py migrate --noinput && \
+                    python3 manage.py collectstatic --noinput && \
+                    gunicorn --bind 0.0.0.0:8000 core.wsgi:application"
+    volumes:
+      - ./core:/app
+      - media_volume:/usr/src/app/media
+    expose:
+      - "8000"
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - ./envs/prod/django/.env
+
+  db:
+    container_name: db
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./envs/prod/db/.env
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      -"80:80"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+      - static_volumes:/home/app/static
+      - media_volumes:/home/app/media
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  static_volumes:
+  media_volumes:

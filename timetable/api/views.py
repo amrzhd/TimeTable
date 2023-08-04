@@ -6,7 +6,7 @@ from .serializers import (
     TeacherListFreeSectionSerializer,
     SetClassSerializer,
     AddFreeSectionsToSectionSerializer,
-    ConsultantSetFreeSectionSerializer,
+    SupervisorSetFreeSectionSerializer,
     )
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -64,12 +64,12 @@ class TeacherFreeSectionListAPIView(generics.ListAPIView):
             serializer = self.serializer_class(query, many=True)
             return Response(serializer.data)
 
-class ConsultantSetFreeSectionAPIView(generics.CreateAPIView):
+class SupervisorSetFreeSectionAPIView(generics.CreateAPIView):
     """
     Teacher sets the free sections
     """
     permission_classes = [IsSupervisor, IsAuthenticated]
-    serializer_class = ConsultantSetFreeSectionSerializer
+    serializer_class = SupervisorSetFreeSectionSerializer
         
     def post(self,request):
         serializer = self.serializer_class(data=request.data, many=False)
@@ -112,7 +112,7 @@ class SectionListAPIView(generics.ListAPIView):
     """
     Gives a list of sections of a specific teacher (based on teacher id)
     """
-    permission_classes = [IsSupervisor, IsConsultant, IsAuthenticated]
+    permission_classes = [IsSupervisor, IsAuthenticated]
     serializer_class = SectionListSerializer
     filter_backends = [DjangoFilterBackend, SectionFilterBackend]
     filterset_fields = {

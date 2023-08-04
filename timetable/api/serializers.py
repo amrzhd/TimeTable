@@ -15,7 +15,7 @@ class TeacherSetFreeSectionSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
         
-class ConsultantSetFreeSectionSerializer(serializers.ModelSerializer):
+class SupervisorSetFreeSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = FreeSectionTeacher
         fields =[

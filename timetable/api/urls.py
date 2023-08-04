@@ -8,7 +8,7 @@ from .views import (
     TeacherListFreeSectionListAPIView,
     SetClassUpdateAPIView,
     AddFreeSectionsToSectionsCreateAPIView,
-    ConsultantSetFreeSectionAPIView,
+    SupervisorSetFreeSectionAPIView,
     TeacherFreeSectionListAPIView,
     )
 
@@ -16,7 +16,7 @@ urlpatterns = [
     
     #Teacher Set Free section
     path("teacher-set-free-section/", TeacherSetFreeSectionAPIView.as_view(), name="teacher-set-free-section"),
-    path("consultant-set-free-section/", ConsultantSetFreeSectionAPIView.as_view(), name="consultant-set-free-section"),
+    path("supervisor-set-free-section/", SupervisorSetFreeSectionAPIView.as_view(), name="supervisor-set-free-section"),
     
     #Section Lists:
     path("section-list/<str:personal_id>/", SectionListAPIView.as_view(), name="section-list"),

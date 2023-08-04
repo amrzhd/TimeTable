@@ -27,25 +27,19 @@ from decouple import config
 
 
 urlpatterns = [
+    #admin panel
     path("admin/", admin.site.urls),
     # accounts app
     path("accounts/", include("accounts.urls")),
     # timetable app
     path("timetable/", include("timetable.urls")),
     # api authentication 
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     # api doc app
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
-    path(
-        "api/schema/swagger-ui/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui",
-    ),
-    path(
-        "api/schema/redoc/",
-        SpectacularRedocView.as_view(url_name="schema"),
-        name="redoc",
-    ),
+    path("api/schema/swagger-ui/",SpectacularSwaggerView.as_view(url_name="schema"),name="swagger-ui"),
+    path("api/schema/redoc/",SpectacularRedocView.as_view(url_name="schema"),name="redoc"),
+    #silk
     path(f"{config('SILK_URL', default='silk')}/", include('silk.urls', namespace='silk')),
 ]
 

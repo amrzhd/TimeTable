@@ -5,7 +5,7 @@ from operator import or_
 
 class SectionFilterBackend(filters.BaseFilterBackend):
     """
-    Filter that only allows users to see their own objects.
+    Filtering a time section based on its fields
     """
     def filter_queryset(self, request, queryset, view):
         filters = []

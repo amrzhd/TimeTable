@@ -22,15 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
-    "django-insecure-lp6m*3z^m649n*@s7ai+n=i5grx0uhlx6&z#cpnnwu7titzk+$"
-)
-# SECRET_KEY = config("SECRET_KEY", default="test")
+SECRET_KEY = config("SECRET_KEY", default="test")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=True)
-
-#DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -183,6 +178,11 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
+# time for clear cache (OTP SYSTEM )
+OTP_CODE_TIME = 180
+
+
+
 # json web token configs
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
@@ -191,3 +191,16 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
 }
+
+# # Caching configuration1
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://redis:6379",
+#         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+#     }
+# }
+
+# # celery configuration
+
+# CELERY_BROKER_URL = "redis://redis:6379/1"

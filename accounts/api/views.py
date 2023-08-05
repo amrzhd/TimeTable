@@ -10,9 +10,31 @@ from .serializers import (
     SupervisorRegisterSerializer,
     ConsultantRegisterSerializer,
     GiveUserIdSerializer,
+    UserCheckSerializer,
     )
 
+class UserCheckAPIView(generics.GenericAPIView):
+    """
+    Checks whether the user is registered before or not
+    """
+    serializer_class = UserCheckSerializer
     
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            national_code = serializer.validated_data.get('national_code')
+            
+            # Check if the user with the given national_code exists in the database
+            try:
+                user = User.objects.get(national_code=national_code)
+                return Response({"national_code":f"{national_code}"},
+                                status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({"message":f"User with national code of {national_code} doesn't exist!"},
+                                status=status.HTTP_404_NOT_FOUND)
+                
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class TeacherRegisterAPIView(generics.GenericAPIView):
     """
     Creates a new teacher user with the given info and credentials

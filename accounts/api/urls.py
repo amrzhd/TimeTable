@@ -6,15 +6,18 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from .views import (
+    UserCheckAPIView,
     TeacherRegisterAPIView,
     SupervisorRegisterAPIView,
     ConsultantRegisterAPIView,
     GiveUserIdUpdateAPIView,
+    
     )
 
 
 urlpatterns = [
     #Register API:
+    path("user-check/", UserCheckAPIView.as_view(), name = "user-check"),
     path("register-teacher/", TeacherRegisterAPIView.as_view(), name="register-teacher"),
     path("register-supervisor/", SupervisorRegisterAPIView.as_view(), name="register-supervisor"),
     path("register-consultant/", ConsultantRegisterAPIView.as_view(), name="register-consultant"),

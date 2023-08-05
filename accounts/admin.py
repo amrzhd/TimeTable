@@ -5,12 +5,12 @@ from django.contrib.auth.admin import UserAdmin
 
 class UserAdminConfig(UserAdmin):
     model = User
-    search_fields = ("email","personal_id")
-    list_filter = ("email", "is_active", "is_staff", "is_teacher", "is_supervisor", "is_consultant", "personal_id")
+    search_fields = ("email", "national_code", "personal_id",)
+    list_filter = ("email", "national_code", "is_active", "is_staff", "is_teacher", "is_supervisor", "is_consultant", "personal_id",)
     ordering = ("-created_date",)
-    list_display = ("email", "is_active", "is_staff", "is_teacher", "is_supervisor", "is_consultant", "personal_id")
+    list_display = ("email", "national_code", "is_active", "is_staff", "is_teacher", "is_supervisor", "is_consultant", "personal_id",)
     fieldsets = (
-        ("Authentication", {"fields": ("email","personal_id")}),
+        ("Authentication", {"fields": ("email", "national_code", "personal_id")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "is_teacher", "is_supervisor", "is_consultant")}),
         (
             "Group Permissions",
@@ -30,6 +30,8 @@ class UserAdminConfig(UserAdmin):
                 "classes": ("wide",),
                 "fields": (
                     "email",
+                    "national_code",
+                    "phone",
                     "password1",
                     "password2",
                     "is_active",

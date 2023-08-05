@@ -1,6 +1,14 @@
 from rest_framework import serializers
 from accounts.models import User
 
+
+class UserCheckSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = [
+            "national_code",
+        ]
     
 class TeacherRegisterSerializer(serializers.ModelSerializer):
     """
